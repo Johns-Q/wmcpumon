@@ -1,0 +1,5 @@
+wmcpumon
+*.o
+*~
+www/wmcpumon-*.tar.bz2
+www/html

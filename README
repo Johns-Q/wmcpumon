@@ -1,0 +1,43 @@
+
+@file README		Cpu system monitor dockapp.
+
+Copyright (c) 2010 by Lutz Sammer.  All Rights Reserved.
+
+Contributor(s):
+
+License: AGPLv3
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+$Id: $
+
+This is a small dockapp, that displays the following information about the
+system:
+
+    - Current CPU utilization of up to four CPU cores
+    - or current aggregates CPU utilization of all CPUs and cores
+    - Up to two minutes history of CPU utilization
+    - Current memory usage
+    - Current swap usage
+    - Can sleep while screensaver running
+
+To compile you must have libxcb (xcb-dev) installed.
+
+Just make make and play.
+
+Use wmcpumon -h to see the command line options.
+
+Requires:
+	x11-libs/libxcb
+		X C-language Bindings library
+		http://xcb.freedesktop.org/
+
+Lutz Sammer johns98@gmx.net
