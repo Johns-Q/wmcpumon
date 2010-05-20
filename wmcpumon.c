@@ -363,8 +363,8 @@ void Loop(void)
 	    if (fds[0].revents & (POLLIN | POLLPRI)) {
 		if ((event = xcb_poll_for_event(Connection))) {
 
-		    switch (event->
-			response_type & XCB_EVENT_RESPONSE_TYPE_MASK) {
+		    switch (event->response_type &
+			XCB_EVENT_RESPONSE_TYPE_MASK) {
 			case XCB_EXPOSE:
 			    // collapse multi expose
 			    if (!((xcb_expose_event_t *) event)->count) {
@@ -995,11 +995,12 @@ static void PrintVersion(void)
 */
 static void PrintUsage(void)
 {
-    printf("Usage: wmcpumon [-a] [-c n] [-l] [-r rate] [-w]\n"
+    printf("Usage: wmcpumon [-a] [-c n] [-l] [-r rate] [-s] [-w]\n"
 	"\t-a\tdisplay the aggregate numbers of all cores\n"
 	"\t-c n\tfirst cpu to use (to monitor more than 4 cores)\n"
 	"\t-l\tuse a logarithmic scale\n"
 	"\t-r rate\trefresh rate (in milliseconds, default 250 ms)\n"
+	"\t-s\tsleep while screen-saver is running or video blanked\n"
 	"\t-w\tStart in window mode\n" "Only idiots print usage on stderr!\n");
 }
 
