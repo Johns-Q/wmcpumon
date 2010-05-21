@@ -58,7 +58,7 @@ clean:
 	-rm *.o *~
 
 clobber:	clean
-	-rm wmcpumon
+	-rm -rf wmcpumon www/html
 
 dist:
 	tar cjCf .. wmcpumon-`date +%F-%H`.tar.bz2 \
