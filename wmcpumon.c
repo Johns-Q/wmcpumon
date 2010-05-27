@@ -435,8 +435,8 @@ int Init(int argc, char *const argv[])
 {
     const char *display_name;
     xcb_connection_t *connection;
-    const xcb_setup_t *setup;
     xcb_screen_iterator_t iter;
+    int screen_nr;
     xcb_screen_t *screen;
     xcb_gcontext_t normal;
     uint32_t mask;
@@ -453,14 +453,16 @@ int Init(int argc, char *const argv[])
 
     //	Open the connection to the X server.
     //	use the DISPLAY environment variable as the default display name
-    connection = xcb_connect(NULL, NULL);
+    connection = xcb_connect(NULL, &screen_nr);
     if (!connection || xcb_connection_has_error(connection)) {
 	fprintf(stderr, "Can't connect to X11 server on %s\n", display_name);
 	return -1;
     }
-    //	Get the first screen
-    setup = xcb_get_setup(connection);
-    iter = xcb_setup_roots_iterator(setup);
+    //	Get the requested screen number
+    iter = xcb_setup_roots_iterator(xcb_get_setup(connection));
+    for (i=0; i<screen_nr; ++i) {
+	xcb_screen_next(&iter);
+    }
     screen = iter.data;
 
     //	Create normal graphic context
