@@ -24,6 +24,7 @@ system:
 
     - Current CPU utilization of up to four CPU cores
     - or current aggregates CPU utilization of all CPUs and cores
+    - support for hyper-threading, joins display of two CPUs
     - Up to two minutes history of CPU utilization
     - Current memory usage
     - Current swap usage

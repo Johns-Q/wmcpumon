@@ -92,6 +92,7 @@ static int Rate;			///< update rate in ms
 static char WindowMode;			///< start in window mode
 static char Logscale;			///< show cpu bar in logarithmic scale
 static char AllCpus;			///< use aggregate numbers of all cpus
+static char JoinCpus;			///< aggregate numbers of two cpus
 static char UseSleep;			///< use sleep while screensaver runs
 
 extern void Timeout(void);		///< called from event loop
@@ -460,7 +461,7 @@ int Init(int argc, char *const argv[])
     }
     //	Get the requested screen number
     iter = xcb_setup_roots_iterator(xcb_get_setup(connection));
-    for (i=0; i<screen_nr; ++i) {
+    for (i = 0; i < screen_nr; ++i) {
 	xcb_screen_next(&iter);
     }
     screen = iter.data;
@@ -626,6 +627,7 @@ int GetStat(void)
     uint64_t nice;
     uint64_t system;
     uint64_t idle;
+    uint64_t used;
     uint64_t total;
 
     n = -1;
@@ -641,18 +643,15 @@ int GetStat(void)
 		    "cpu   %" PRIu64 "%" PRIu64 " %" PRIu64 " %" PRIu64 "",
 		    &user, &nice, &system, &idle);
 
-		total =
-		    user + nice + system + idle - CpuInfo[0].Used -
-		    CpuInfo[0].Idle;
+		used = user + nice + system;
+		total = used + idle - CpuInfo[0].Used - CpuInfo[0].Idle;
 
 		CpuInfo[0].Load = 0;
 		if (total) {
-		    CpuInfo[0].Load =
-			(100 * (user + nice + system - CpuInfo[0].Used))
-			/ total;
+		    CpuInfo[0].Load = (100 * (used - CpuInfo[0].Used)) / total;
 		}
 		CpuInfo[0].Idle = idle;
-		CpuInfo[0].Used = user + nice + system;
+		CpuInfo[0].Used = used;
 		Cpus = 1;
 	    } else {
 
@@ -667,6 +666,7 @@ int GetStat(void)
 		    n = sscanf(s,
 			"cpu%u %" PRIu64 " %" PRIu64 " %" PRIu64 " %" PRIu64,
 			&cpu, &user, &nice, &system, &idle);
+		    // end of cpu area
 		    if (n != 5) {
 			Cpus = cpu + 1;
 			break;
@@ -676,21 +676,45 @@ int GetStat(void)
 			continue;
 		    }
 
+		    used = user + nice + system;
+
+		    // join two cpu's into one bar
+		    if (JoinCpus) {
+			uint64_t idle2;
+
+			if (!(s = strchr(s + 6, '\n'))) {
+			    break;
+			}
+			++s;		// skip newline
+			n = sscanf(s,
+			    "cpu%u %" PRIu64 " %" PRIu64 " %" PRIu64 " %"
+			    PRIu64, &cpu, &user, &nice, &system, &idle2);
+			// end of cpu area
+			if (n != 5) {
+			    Cpus = cpu + 1;
+			    break;
+			}
+			used += user + nice + system;
+			idle += idle2;
+			cpu >>= 1;
+		    }
+
 		    total =
-			user + nice + system + idle - CpuInfo[cpu].Used -
-			CpuInfo[cpu].Idle;
+			used + idle - CpuInfo[cpu].Used - CpuInfo[cpu].Idle;
 
 		    CpuInfo[cpu].Load = 0;
 		    if (total) {
-			CpuInfo[cpu].Load =
-			    (100 * (user + nice + system - CpuInfo[cpu].Used))
+			CpuInfo[cpu].Load = (100 * (used - CpuInfo[cpu].Used))
 			    / total;
 		    }
 		    CpuInfo[cpu].Idle = idle;
-		    CpuInfo[cpu].Used = user + nice + system;
+		    CpuInfo[cpu].Used = used;
 
-		    //printf("cpu %d %"PRIu64" %"PRIu64" %"PRIu64" %"PRIu64" %d\n", cpu, user, nice, system,
-		    //	idle, CpuInfo[cpu].Load);
+		    /*
+		       printf("cpu %d %" PRIu64 " %" PRIu64 " %" PRIu64 " %"
+		       PRIu64 " %d\n", cpu, user, nice, system, idle,
+		       CpuInfo[cpu].Load);
+		     */
 		    if (cpu == MAX_CPUS - 1) {	// no more cpus are supported
 			Cpus = MAX_CPUS;
 			break;
@@ -805,7 +829,7 @@ void DrawCpuGraphs(int loops)
     //
     //	    copy area to the left
     //
-    xcb_copy_area(Connection, Pixmap, Pixmap, NormalGC, 7, 6, 6, 6, 49, 39);
+    xcb_copy_area(Connection, Pixmap, Pixmap, NormalGC, 7, 6, 6, 6, 48, 39);
 
     y = 6;
     o = 40 / Cpus;
@@ -825,11 +849,11 @@ void DrawCpuGraphs(int loops)
 	if (n != CpuInfo[c].OldAvgLoadSize) {
 	    CpuInfo[c].OldAvgLoadSize = n;
 	    if (n) {
-		xcb_copy_area(Connection, Image, Pixmap, NormalGC, 55, y, 55,
+		xcb_copy_area(Connection, Image, Pixmap, NormalGC, 55, y, 54,
 		    y, 1, n);
 	    }
 	    if (n != o) {
-		xcb_copy_area(Connection, Image, Pixmap, NormalGC, 64, 0, 55,
+		xcb_copy_area(Connection, Image, Pixmap, NormalGC, 64, 0, 54,
 		    y + n, 1, o - n);
 	    }
 	}
@@ -999,7 +1023,8 @@ static void PrintUsage(void)
 {
     printf("Usage: wmcpumon [-a] [-c n] [-l] [-r rate] [-s] [-w]\n"
 	"\t-a\tdisplay the aggregate numbers of all cores\n"
-	"\t-c n\tfirst cpu to use (to monitor more than 4 cores)\n"
+	"\t-c n\tfirst CPU to use (to monitor more than 4 cores)\n"
+	"\t-j\tjoin two CPUs (for hyper-threading CPUs)\n"
 	"\t-l\tuse a logarithmic scale\n"
 	"\t-r rate\trefresh rate (in milliseconds, default 250 ms)\n"
 	"\t-s\tsleep while screen-saver is running or video blanked\n"
@@ -1020,13 +1045,16 @@ int main(int argc, char *const argv[])
     //	Parse arguments.
     //
     for (;;) {
-	switch (getopt(argc, argv, "h?-ac:lr:sw")) {
+	switch (getopt(argc, argv, "h?-ac:jlr:sw")) {
 	    case 'a':			// all cpus
 		AllCpus = 1;
 		continue;
-	    case 'c':			// cpu
+	    case 'c':			// cpu start
 		StartCpu = atoi(optarg);
-		break;
+		continue;
+	    case 'j':			// join cpu's
+		JoinCpus = 1;
+		continue;
 	    case 'l':			// logarithmic scale
 		Logscale = 1;
 		continue;
