@@ -32,6 +32,7 @@
 **	@n
 **	- Current CPU utilization of up to four CPU cores
 **	- or current aggregates CPU utilization of all CPUs and cores
+**	- Support for hyper-threading, joins display of two CPUs
 **	- Up to two minutes history of CPU utilization
 **	- Current memory usage
 **	- Current swap usage
@@ -71,7 +72,7 @@
 #include <xcb/screensaver.h>
 #endif
 
-#include "wmcpumon.xpm"
+#include "wmcpumon.xpm"			// background, graphics, bitmap fonts
 
 ////////////////////////////////////////////////////////////////////////////
 
@@ -364,8 +365,10 @@ void Loop(void)
 	    if (fds[0].revents & (POLLIN | POLLPRI)) {
 		if ((event = xcb_poll_for_event(Connection))) {
 
-		    switch (event->response_type &
-			XCB_EVENT_RESPONSE_TYPE_MASK) {
+		    switch (event->
+			response_type & XCB_EVENT_RESPONSE_TYPE_MASK) {
+			// background pixmap no need to redraw
+#if 0
 			case XCB_EXPOSE:
 			    // collapse multi expose
 			    if (!((xcb_expose_event_t *) event)->count) {
@@ -375,11 +378,12 @@ void Loop(void)
 				xcb_flush(Connection);
 			    }
 			    break;
+#endif
 			case XCB_DESTROY_NOTIFY:
 			    return;
 			case 0:
-			    printf("error %x\n", event->response_type);
 			    // error_code
+			    // printf("error %x\n", event->response_type);
 			    break;
 			default:
 #ifdef SCREENSAVER
@@ -405,8 +409,8 @@ void Loop(void)
 				break;
 			    }
 #endif
-			    printf("unknown %x\n", event->response_type);
 			    // Unknown event type, ignore it
+			    printf("unknown %x\n", event->response_type);
 			    break;
 		    }
 
@@ -483,7 +487,8 @@ int Init(int argc, char *const argv[])
 
     mask = XCB_CW_BACK_PIXMAP | XCB_CW_EVENT_MASK;
     values[0] = pixmap;
-    values[1] = XCB_EVENT_MASK_EXPOSURE;
+    //values[1] = XCB_EVENT_MASK_EXPOSURE;
+    values[1] = XCB_EVENT_MASK_NO_EVENT;
 
     xcb_create_window(connection,	// Connection
 	XCB_COPY_FROM_PARENT,		// depth (same as root)
@@ -1021,7 +1026,7 @@ static void PrintVersion(void)
 */
 static void PrintUsage(void)
 {
-    printf("Usage: wmcpumon [-a] [-c n] [-l] [-r rate] [-s] [-w]\n"
+    printf("Usage: wmcpumon [-a] [-c n] [-j] [-l] [-r rate] [-s] [-w]\n"
 	"\t-a\tdisplay the aggregate numbers of all cores\n"
 	"\t-c n\tfirst CPU to use (to monitor more than 4 cores)\n"
 	"\t-j\tjoin two CPUs (for hyper-threading CPUs)\n"

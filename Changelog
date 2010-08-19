@@ -1,4 +1,9 @@
 User johns
+Date Thu Aug 19 13:16:21 CEST 2010
+
+    Added documentation for join CPUs.
+    Expose handling is not needed, when background pixmap is used.
+
 Date Mon Aug  2 13:12:56 CEST 2010
 
     Added support for hyper-threading CPUs.

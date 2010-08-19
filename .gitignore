@@ -1,5 +1,6 @@
 wmcpumon
 *.o
 *~
+.*.swp
 www/wmcpumon-*.tar.bz2
 www/html
