@@ -1,0 +1,102 @@
+.\"
+.\"	@file wmcpumon.1	@brief multi CPU system monitor dockapp
+.\"
+.\"	Copyright (c) 2010 by Lutz Sammer.  All Rights Reserved.
+.\"
+.\"	Contributor(s):
+.\"
+.\"	License: AGPLv3
+.\"
+.\"	This program is free software: you can redistribute it and/or modify
+.\"	it under the terms of the GNU Affero General Public License as
+.\"	published by the Free Software Foundation, either version 3 of the
+.\"	License.
+.\"
+.\"	This program is distributed in the hope that it will be useful,
+.\"	but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\"	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\"	GNU Affero General Public License for more details.
+.\"
+.\"	$Id: $
+.\" ------------------------------------------------------------------------
+.TH "wmcpumon" 1 "2010-09-15" "1" "wmcpumon Manual"
+
+.SH NAME
+wmcpumon \- a multi CPU system monitor dockapp
+
+.SH SYNOPSIS
+.B wmcpumon
+.BI [\-?|\-h]
+.BI [\-a]
+.BI [\-c \ first ]
+.BI [\-j]
+.BI [\-n \ cpus ]
+.BI [\-l]
+.BI [\-r \ rate ]
+.BI [\-s]
+.BI [\-w]
+
+.SH DESCRIPTION
+This is a small dockapp, that displays the following information about the
+system:
+.LP
+- Current CPU utilization of up to four CPUs or CPU cores
+.LP
+- or current aggregates CPU utilization of all CPUs and cores
+.LP
+- Support for hyper-threading CPUs, joins display of two CPUs
+.LP
+- Up to two minutes history of CPU utilization
+.LP
+- Current memory usage
+.LP
+- Current swap usage
+.LP
+- Can sleep while screensaver is running
+
+.SH OPTIONS
+.TP
+.B \-?|\-h
+Show short usage help and exit.  The help is printed to stdout.  A note to all
+developers: please print to stdout!
+.TP
+.B \-a
+Display the aggregate number of CPU utilization of all CPUs and/or CPU cores.
+This option has higher priority than the -c and -j options.
+.TP
+.B \-c first
+Number of the first CPU to use in this dockapp, can be used to monitor more
+than 4 cores or CPUs, with multiple dockapps.
+.TP
+.B \-j
+Join two CPUs, the CPU utilization of two CPUs is combined.
+(Useful for hyper-threading CPUs)
+.TP
+.B \-l
+Use a logarithmic scale to display the CPU utilization.  Low activity becomes
+more visibile.
+.TP
+.B \-r rate
+Refresh rate of the CPU utilization in milliseconds, defaults to 250ms.
+The history of CPU utilization is updated every 10th time.  Shorter means more
+CPU usage and more updates.
+.TP
+.B \-s
+Sleep while screen-saver is running or video is blanked.  The dockapp sleeps
+and did't use any CPU cyles, while the display is switched off.  Saves energy
+on laptops.
+.TP
+.B \-w
+Start in window mode, used for debugging.  The dockapp gets the normal window
+borders and title.
+
+.SH FILES
+.TP
+.I /proc/stat
+kernel/system statistics.
+.TP
+.I /proc/meminfo
+This file reports statistics about memory usage on  the  system.
+
+.SH AUTHOR
+Copyright (C) 2010 Lutz Sammer.  License: AGPLv3.

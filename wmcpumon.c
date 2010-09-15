@@ -1,5 +1,5 @@
 ///
-///	@file wmcpumon.c	@brief	CPU system monitor dockapp
+///	@file wmcpumon.c	@brief	multi CPU system monitor dockapp
 ///
 ///	Copyright (c) 2010 by Lutz Sammer.  All Rights Reserved.
 ///
@@ -365,9 +365,9 @@ void Loop(void)
 	    if (fds[0].revents & (POLLIN | POLLPRI)) {
 		if ((event = xcb_poll_for_event(Connection))) {
 
-		    switch (event->
-			response_type & XCB_EVENT_RESPONSE_TYPE_MASK) {
-			// background pixmap no need to redraw
+		    switch (event->response_type &
+			XCB_EVENT_RESPONSE_TYPE_MASK) {
+			    // background pixmap no need to redraw
 #if 0
 			case XCB_EXPOSE:
 			    // collapse multi expose

@@ -32,7 +32,8 @@ LIBS=	$(STATIC) `pkg-config --libs $(STATIC) \
 	xcb-screensaver xcb-icccm xcb-shape xcb-shm xcb-image xcb` -lpthread
 
 OBJS=	wmcpumon.o
-FILES=	Makefile README Changelog AGPL-3.0.txt wmcpumon.doxyfile wmcpumon.xpm
+FILES=	Makefile README Changelog AGPL-3.0.txt wmcpumon.doxyfile wmcpumon.xpm \
+	wmcpumon.1
 
 all:	wmcpumon
 
