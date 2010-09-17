@@ -25,7 +25,7 @@ GIT_REV =	$(shell git describe --always 2>/dev/null)
 
 CC=	gcc
 OPTIM=	-march=native -O2 -fomit-frame-pointer
-CFLAGS= $(OPTIM) -W -Wall -g -pipe \
+CFLAGS= $(OPTIM) -W -Wall -Wextra -g -pipe \
 	-DVERSION='$(VERSION)' $(if $(GIT_REV), -DGIT_REV='"$(GIT_REV)"')
 #STATIC= --static
 LIBS=	$(STATIC) `pkg-config --libs $(STATIC) \
@@ -65,9 +65,10 @@ dist:
 	tar cjCf .. wmcpumon-`date +%F-%H`.tar.bz2 \
 		$(addprefix wmcpumon/, $(FILES) $(OBJS:.o=.c))
 
-install:
+install: wmcpumon wmcpumon.1
 	strip --strip-unneeded -R .comment wmcpumon
 	install -s wmcpumon /usr/local/bin/
+	install -D wmcpumon.1 /usr/local/share/man/man1/wmcpumon.1
 
 help:
 	@echo "make all|doc|indent|clean|clobber|dist|install|help"
