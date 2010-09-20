@@ -401,7 +401,7 @@ void Loop(void)
 				    xcb_copy_area(Connection, Image, Pixmap,
 					NormalGC, 6, 6, 6, 6, 49, 39);
 				    xcb_copy_area(Connection, Image, Pixmap,
-					NormalGC, 65, 57, 35, 22, 21, 7);
+					NormalGC, 65, 57, 34, 22, 21, 7);
 				    xcb_clear_area(Connection, 0, Window, 6, 6,
 					49, 39);
 				    xcb_flush(Connection);

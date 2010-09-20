@@ -1,4 +1,8 @@
 User johns
+Date Mon Sep 20 16:03:41 CEST 2010
+
+    Fixed bug: After sleep a line stays.
+
 Date Wed Sep 15 14:31:38 CEST 2010
 
     Added man page.
