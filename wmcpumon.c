@@ -365,8 +365,8 @@ void Loop(void)
 	    if (fds[0].revents & (POLLIN | POLLPRI)) {
 		if ((event = xcb_poll_for_event(Connection))) {
 
-		    switch (event->response_type &
-			XCB_EVENT_RESPONSE_TYPE_MASK) {
+		    switch (event->
+			response_type & XCB_EVENT_RESPONSE_TYPE_MASK) {
 			    // background pixmap no need to redraw
 #if 0
 			case XCB_EXPOSE:
@@ -395,7 +395,7 @@ void Loop(void)
 				if (sse->code == XCB_SCREENSAVER_STATE_ON) {
 				    // screensave on, stop updates
 				    delay = -1;
-				} else {
+				} else if (delay == -1) {
 				    // screensave off, resume updates
 				    delay = Rate;
 				    xcb_copy_area(Connection, Image, Pixmap,
@@ -410,7 +410,7 @@ void Loop(void)
 			    }
 #endif
 			    // Unknown event type, ignore it
-			    printf("unknown %x\n", event->response_type);
+			    //printf("unknown %x\n", event->response_type);
 			    break;
 		    }
 

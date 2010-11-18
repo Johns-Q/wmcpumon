@@ -1,4 +1,8 @@
 User johns
+Date Thu Nov 18 18:31:18 CET 2010
+
+    Fixed: Ignore screen-saver-off, if already handled.
+
 Date Mon Sep 20 16:03:41 CEST 2010
 
     Fixed bug: After sleep a line stays.
