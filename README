@@ -43,5 +43,10 @@ Requires:
 	x11-libs/xcb-util
 		X C-language Bindings sample implementations
 		http://xcb.freedesktop.org/
+		Note: we are not compatible with versions before 0.3.8
+	x11-libs/xcb-util-wm
+		X C-language Bindings sample implementations
+		http://xcb.freedesktop.org/
+		Note: we are not compatible with versions before 0.3.8
 
 Lutz Sammer johns98@gmx.net

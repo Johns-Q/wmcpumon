@@ -1,7 +1,7 @@
 #
 #	@file Makefile		@brief CPU system monitor dockapp.
 #
-#	Copyright (c) 2010 by Lutz Sammer.  All Rights Reserved.
+#	Copyright (c) 2010, 2011 by Lutz Sammer.  All Rights Reserved.
 #
 #	Contributor(s):
 #
@@ -20,7 +20,7 @@
 #	$Id$
 #----------------------------------------------------------------------------
 
-VERSION =	"1.01"
+VERSION =	"1.02"
 GIT_REV =	$(shell git describe --always 2>/dev/null)
 
 CC=	gcc
@@ -28,8 +28,8 @@ OPTIM=	-march=native -O2 -fomit-frame-pointer
 CFLAGS= $(OPTIM) -W -Wall -Wextra -g -pipe \
 	-DVERSION='$(VERSION)' $(if $(GIT_REV), -DGIT_REV='"$(GIT_REV)"')
 #STATIC= --static
-LIBS=	$(STATIC) `pkg-config --libs $(STATIC) \
-	xcb-screensaver xcb-icccm xcb-shape xcb-shm xcb-image xcb` -lpthread
+LIBS=	$(STATIC) `pkg-config --libs $(STATIC) xcb-util xcb-atom xcb-event \
+	xcb-icccm xcb-screensaver xcb-shape xcb-shm xcb-image xcb` -lpthread
 
 OBJS=	wmcpumon.o
 FILES=	Makefile README Changelog AGPL-3.0.txt wmcpumon.doxyfile wmcpumon.xpm \
@@ -62,8 +62,8 @@ clobber:	clean
 	-rm -rf wmcpumon www/html
 
 dist:
-	tar cjCf .. wmcpumon-`date +%F-%H`.tar.bz2 \
-		$(addprefix wmcpumon/, $(FILES) $(OBJS:.o=.c))
+	tar cjf wmcpumon-`date +%F-%H`.tar.bz2 --transform 's,^,wmcpumon/,' \
+		$(FILES) $(OBJS:.o=.c)
 
 install: wmcpumon wmcpumon.1
 	strip --strip-unneeded -R .comment wmcpumon
