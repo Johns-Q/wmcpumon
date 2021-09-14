@@ -1,7 +1,7 @@
 #
 #	@file Makefile		@brief CPU system monitor dockapp.
 #
-#	Copyright (c) 2010, 2011 by Lutz Sammer.  All Rights Reserved.
+#	Copyright (c) 2010, 2011, 2021 by Lutz Sammer.  All Rights Reserved.
 #
 #	Contributor(s):
 #
@@ -20,7 +20,7 @@
 #	$Id$
 #----------------------------------------------------------------------------
 
-VERSION =	"1.02"
+VERSION =	"1.03"
 GIT_REV =	$(shell git describe --always 2>/dev/null)
 
 CC=	gcc

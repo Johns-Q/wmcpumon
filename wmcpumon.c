@@ -1,7 +1,7 @@
 ///
 ///	@file wmcpumon.c	@brief	multi CPU system monitor dockapp
 ///
-///	Copyright (c) 2010, 2011 by Lutz Sammer.  All Rights Reserved.
+///	Copyright (c) 2010, 2011, 2021 by Lutz Sammer.  All Rights Reserved.
 ///
 ///	Contributor(s):
 ///		Bitmap and design based on wmc2d.
@@ -392,7 +392,7 @@ void Loop(void)
 				xcb_screensaver_notify_event_t *sse;
 
 				sse = (xcb_screensaver_notify_event_t *) event;
-				if (sse->code == XCB_SCREENSAVER_STATE_ON) {
+				if (sse->state == XCB_SCREENSAVER_STATE_ON) {
 				    // screensave on, stop updates
 				    delay = -1;
 				} else if (delay == -1) {
