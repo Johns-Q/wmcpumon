@@ -650,7 +650,7 @@ int GetStat(void)
 		total = used + idle - CpuInfo[0].Used - CpuInfo[0].Idle;
 
 		CpuInfo[0].Load = 0;
-		if (total) {
+		if (total && used > CpuInfo[0].Used) {
 		    CpuInfo[0].Load = (100 * (used - CpuInfo[0].Used)) / total;
 		}
 		CpuInfo[0].Idle = idle;
@@ -706,7 +706,7 @@ int GetStat(void)
 			used + idle - CpuInfo[cpu].Used - CpuInfo[cpu].Idle;
 
 		    CpuInfo[cpu].Load = 0;
-		    if (total) {
+		    if (total && used > CpuInfo[cpu].Used) {
 			CpuInfo[cpu].Load = (100 * (used - CpuInfo[cpu].Used))
 			    / total;
 		    }
